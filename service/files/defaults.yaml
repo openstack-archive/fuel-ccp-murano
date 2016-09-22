@@ -1,0 +1,12 @@
+configs:
+  murano_api_port: 8082
+  murano_db_username: murano
+  murano_db_password: password
+  murano_db_name: murano
+  murano_logging_debug: "false"
+  murano_networking_dns: 8.8.8.8
+
+sources:
+  openstack/murano:
+    git_url: https://github.com/openstack/murano.git
+    git_ref: master
