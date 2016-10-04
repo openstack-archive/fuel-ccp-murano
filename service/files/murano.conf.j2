@@ -1,0 +1,51 @@
+# murano.conf
+[DEFAULT]
+debug = {{ murano_logging_debug }}
+verbose = True
+
+log_dir = /var/log/murano
+
+bind_port = {{ murano_api_port }}
+
+home_region = RegionOne
+
+[database]
+connection = mysql+pymysql://{{ murano_db_username }}:{{ murano_db_password }}@mariadb/{{ murano_db_name }}
+
+[engine]
+use_trusts = True
+packages_service=murano
+
+[keystone_authtoken]
+auth_version = v3
+auth_uri = http://keystone:{{ keystone_public_port }}/v3
+auth_url = http://keystone:{{ keystone_admin_port }}/v3
+auth_plugin = password
+project_domain_id = default
+user_domain_id = default
+project_name = service
+username = {{ murano_db_username }}
+password = {{ murano_db_password }}
+
+[oslo_messaging_rabbit]
+rabbit_userid = {{ rabbitmq_user }}
+rabbit_password = {{ rabbitmq_password }}
+rabbit_ha_queues = false
+rabbit_hosts = {{ murano_rabbitmq_ip }}
+rabbit_port = {{ rabbitmq_external_port }}
+
+[rabbitmq]
+host = {{ murano_rabbitmq_ip }}
+port = {{ rabbitmq_external_port }}
+login = {{ rabbitmq_user }}
+password = {{ rabbitmq_password }}
+virtual_host = /
+
+[oslo_messaging_notifications]
+driver = messagingv2
+
+[murano]
+url = http://murano-api:{{ murano_api_port }}
+
+[networking]
+default_dns = {{ murano_networking_dns }}
