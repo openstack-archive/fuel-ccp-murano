@@ -1,0 +1,13 @@
+FROM {{ image_spec("openstack-base") }}
+MAINTAINER {{ maintainer }}
+
+{{ copy_sources("openstack/murano", "/murano") }}
+
+RUN useradd --user-group --create-home --home-dir /var/lib/murano murano \
+    && chmod 755 /var/lib/murano \
+    && /var/lib/microservices/venv/bin/pip install --upgrade /murano \
+    && mkdir -p /etc/murano /var/lib/murano /var/log/murano \
+    && cp -r /murano/etc/murano/* /etc/murano/ \
+    && chown -R murano: /etc/murano /var/lib/murano /var/log/murano
+
+RUN usermod -a -G microservices murano
