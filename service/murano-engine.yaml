@@ -1,0 +1,23 @@
+dsl_version: 0.1.0
+service:
+  name: murano-engine
+  containers:
+    - name: murano-engine
+      image: murano-engine
+      # TODO(sreshetniak): add probes
+      pre:
+        - name: chown-logs-dir
+          command: "sudo /bin/chown murano: /var/log/ccp/murano"
+      daemon:
+        command: murano-engine --config-file /etc/murano/murano.conf
+        files:
+          - murano.conf
+        dependencies:
+          - rabbitmq
+          - heat-api
+
+files:
+  murano.conf:
+    path: /etc/murano/murano.conf
+    content: murano.conf.j2
+    perm: "0600"
