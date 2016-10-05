@@ -1,0 +1,18 @@
+configs:
+  murano:
+    api_port: 8082
+
+    db:
+      username: murano
+      password: password
+      name: murano
+
+    logging_debug: true
+
+    networking:
+      dns: 8.8.8.8
+
+sources:
+  openstack/murano:
+    git_url: https://git.openstack.org/openstack/murano.git
+    git_ref: stable/newton

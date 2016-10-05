@@ -1,0 +1,46 @@
+[DEFAULT]
+debug = {{ murano.logging_debug }}
+verbose = True
+
+log_dir = /var/log/murano
+
+bind_port = {{ murano.api_port }}
+
+home_region = RegionOne
+
+transport_url = rabbit://{{ rabbitmq.user }}:{{ rabbitmq.password }}@{{ address("rabbitmq") }}:{{ rabbitmq.port }}/
+
+[database]
+connection = mysql+pymysql://{{ murano.db.username }}:{{ murano.db.password }}@{{ address('mariadb') }}/{{ murano.db.name }}
+
+[engine]
+use_trusts = True
+packages_service=murano
+
+[keystone_authtoken]
+auth_version = v3
+auth_uri = http://{{ address('keystone') }}:{{ keystone.public_port }}/v3
+auth_url = http://{{ address('keystone') }}:{{ keystone.admin_port }}/v3
+auth_plugin = password
+project_domain_id = default
+user_domain_id = default
+project_name = service
+username = {{ murano.db.username }}
+password = {{ murano.db.password }}
+
+[rabbitmq]
+host = {{ k8s_external_ip }}
+port = {{ rabbitmq.external_port }}
+login = {{ rabbitmq.user }}
+password = {{ rabbitmq.password }}
+virtual_host = /
+
+[oslo_messaging_notifications]
+driver = messagingv2
+transport_url = rabbit://{{ rabbitmq.user }}:{{ rabbitmq.password }}@{{ address("rabbitmq") }}:{{ rabbitmq.port }}/
+
+[murano]
+url = http://{{ address('murano-api') }}:{{ murano.api_port }}
+
+[networking]
+default_dns = {{ murano.networking.dns }}
