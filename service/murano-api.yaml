@@ -1,0 +1,76 @@
+service:
+  name: murano-api
+  ports:
+    - {{ murano.api_port }}
+  containers:
+    - name: murano-api
+      image: murano-api
+      probes:
+        readiness: "true"
+        liveness: "true"
+      pre:
+        - name: murano-db-create
+          type: single
+          command: mysql -v -u root -p{{ db.root_password }} -h {{ address('mariadb') }} -e 'create database `{{ murano.db.name }}`;
+                   grant all privileges on `{{ murano.db.name }}`.* to "{{ murano.db.username }}"@"%" identified by "{{ murano.db.password }}";'
+          dependencies:
+            - mariadb
+        - name: murano-db-sync
+          type: single
+          command: murano-db-manage --config-file /etc/murano/murano.conf upgrade
+          dependencies:
+            - murano-db-create
+          files:
+            - murano.conf
+        - name: murano-user-create
+          type: single
+          command: openstack user create --project service --password {{ murano.db.password }} {{ murano.db.username }}
+          dependencies:
+            - keystone-create-project
+        - name: murano-role-add
+          type: single
+          command: openstack role add --project service --user {{ murano.db.username }} admin
+          dependencies:
+            - murano-user-create
+        - name: murano-service-create
+          type: single
+          command: openstack service create --name murano --description "Application Catalog for OpenStack" application-catalog
+          dependencies:
+            - keystone
+        - name: murano-public-endpoint-create
+          type: single
+          command: openstack endpoint create --region RegionOne murano public http://{{ address('murano-api') }}:{{ murano.api_port }}
+          dependencies:
+            - murano-service-create
+        - name: murano-internal-endpoint-create
+          type: single
+          command: openstack endpoint create --region RegionOne murano internal http://{{ address('murano-api') }}:{{ murano.api_port }}
+          dependencies:
+            - murano-service-create
+        - name: murano-admin-endpoint-create
+          type: single
+          command: openstack endpoint create --region RegionOne murano admin http://{{ address('murano-api') }}:{{ murano.api_port }}
+          dependencies:
+            - murano-service-create
+      daemon:
+        command: murano-api --config-file /etc/murano/murano.conf
+        files:
+          - murano.conf
+        dependencies:
+          - rabbitmq
+      post:
+        - name: murano-import-core
+          type: single
+          command: cd /murano/meta/io.murano; zip -r /tmp/murano-core.zip *;
+                   murano --murano-url http://{{ address('murano-api') }}:{{ murano.api_port }}
+                   --os-username {{ murano.db.username }}
+                   --os-password {{ murano.db.password }}
+                   --os-auth-url http://{{ address('keystone') }}:{{ keystone.public_port }}
+                   --os-project-name service
+                   package-import --is-public /tmp/murano-core.zip
+
+files:
+  murano.conf:
+    path: /etc/murano/murano.conf
+    content: murano.conf.j2
+    perm: "0600"
