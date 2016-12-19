@@ -2,7 +2,8 @@
 debug = {{ murano.logging_debug }}
 verbose = True
 
-log_dir = /var/log/ccp/murano
+use_syslog = false
+use_stderr = true
 
 bind_port = {{ murano.api_port.cont }}
 

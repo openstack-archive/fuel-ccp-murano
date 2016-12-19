@@ -8,8 +8,6 @@ service:
       image: murano-api
       # TODO(sreshetniak): add probes
       pre:
-        - name: chown-logs-dir
-          command: "sudo /bin/chown murano: /var/log/ccp/murano"
         - name: murano-db-create
           type: single
           command: mysql -v -u root -p{{ db.root_password }} -h {{ address(service.database) }} -e 'create database `{{ murano.db.name }}`;
