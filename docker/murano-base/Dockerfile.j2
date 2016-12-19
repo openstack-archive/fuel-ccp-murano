@@ -6,9 +6,9 @@ MAINTAINER {{ maintainer }}
 RUN useradd -U -m -d /var/lib/murano -G microservices murano \
     && chmod 755 /var/lib/murano \
     && /var/lib/microservices/venv/bin/pip install --upgrade /murano \
-    && mkdir -p /etc/murano /var/lib/murano /var/log/murano \
+    && mkdir -p /etc/murano /var/lib/murano \
     && cp -r /murano/etc/murano/* /etc/murano/ \
-    && chown -R murano: /etc/murano /var/lib/murano /var/log/murano
+    && chown -R murano: /etc/murano /var/lib/murano
 
 COPY murano_sudoers /etc/sudoers.d/murano_sudoers
 

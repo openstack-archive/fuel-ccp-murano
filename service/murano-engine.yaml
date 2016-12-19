@@ -5,9 +5,6 @@ service:
     - name: murano-engine
       image: murano-engine
       # TODO(sreshetniak): add probes
-      pre:
-        - name: chown-logs-dir
-          command: "sudo /bin/chown murano: /var/log/ccp/murano"
       daemon:
         command: murano-engine --config-file /etc/murano/murano.conf
         files:
