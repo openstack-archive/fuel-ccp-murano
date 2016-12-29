@@ -6,7 +6,11 @@ service:
   containers:
     - name: murano-api
       image: murano-api
-      # TODO(sreshetniak): add probes
+      probes:
+        readiness:
+          type: "httpGet"
+          port: {{ murano.api_port.cont }}
+          path: "/"
       pre:
         - name: murano-db-create
           type: single
@@ -60,7 +64,7 @@ service:
       post:
         - name: murano-import-core
           type: single
-          command: cd /murano/meta/io.murano; zip -r /tmp/murano-core.zip *;
+          command: cd /murano/meta/io.murano; zip -r /tmp/murano-core.zip *; sleep 20;
                    murano --murano-url http://{{ address('murano-api', murano.api_port) }}
                    --os-username {{ murano.db.username }}
                    --os-password {{ murano.db.password }}
