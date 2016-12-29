@@ -6,7 +6,11 @@ service:
   containers:
     - name: murano-api
       image: murano-api
-      # TODO(sreshetniak): add probes
+      probes:
+        readiness:
+          type: "httpGet"
+          port: {{ murano.api_port.cont }}
+          path: "/"
       pre:
         - name: murano-db-create
           type: single
