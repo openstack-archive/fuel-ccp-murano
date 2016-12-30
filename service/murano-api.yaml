@@ -42,17 +42,17 @@ service:
             - keystone
         - name: murano-public-endpoint-create
           type: single
-          command: openstack endpoint create --region RegionOne murano public http://{{ address('murano-api', murano.api_port, external=True) }}
+          command: openstack endpoint create --region RegionOne murano public {{ address('murano-api', murano.api_port, external=True, with_scheme=True) }}
           dependencies:
             - murano-service-create
         - name: murano-internal-endpoint-create
           type: single
-          command: openstack endpoint create --region RegionOne murano internal http://{{ address('murano-api', murano.api_port) }}
+          command: openstack endpoint create --region RegionOne murano internal {{ address('murano-api', murano.api_port, with_scheme=True) }}
           dependencies:
             - murano-service-create
         - name: murano-admin-endpoint-create
           type: single
-          command: openstack endpoint create --region RegionOne murano admin http://{{ address('murano-api', murano.api_port) }}
+          command: openstack endpoint create --region RegionOne murano admin {{ address('murano-api', murano.api_port, with_scheme=True) }}
           dependencies:
             - murano-service-create
       daemon:
@@ -65,10 +65,10 @@ service:
         - name: murano-import-core
           type: single
           command: cd /murano/meta/io.murano; zip -r /tmp/murano-core.zip *;
-                   murano --murano-url http://{{ address('murano-api', murano.api_port) }}
+                   murano --murano-url {{ address('murano-api', murano.api_port, with_scheme=True) }}
                    --os-username {{ murano.db.username }}
                    --os-password {{ murano.db.password }}
-                   --os-auth-url http://{{ address('keystone', keystone.public_port) }}
+                   --os-auth-url {{ address('keystone', keystone.public_port, with_scheme=True) }}
                    --os-project-name service
                    package-import --is-public /tmp/murano-core.zip
 
