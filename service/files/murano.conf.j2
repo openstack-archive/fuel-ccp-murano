@@ -18,16 +18,7 @@ connection = mysql+pymysql://{{ murano.db.username }}:{{ murano.db.password }}@{
 use_trusts = True
 packages_service = murano
 
-[keystone_authtoken]
-auth_version = v3
-auth_uri = {{ address('keystone', keystone.public_port, with_scheme=True) }}/v3
-auth_url = {{ address('keystone', keystone.admin_port, with_scheme=True) }}/v3
-auth_plugin = password
-project_domain_id = default
-user_domain_id = default
-project_name = service
-username = {{ murano.db.username }}
-password = {{ murano.db.password }}
+{{ keystone_authtoken(murano.username, murano.password) }}
 
 [rabbitmq]
 host = {{ k8s_external_ip }}
