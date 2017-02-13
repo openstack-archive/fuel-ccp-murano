@@ -8,6 +8,9 @@ configs:
       password: password
       name: murano
 
+    username: murano
+    password: murano
+
     logging_debug: false
 
     networking:
