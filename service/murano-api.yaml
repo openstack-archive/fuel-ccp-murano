@@ -35,7 +35,7 @@ service:
             - keystone-create-domain
         - name: murano-role-add
           type: single
-          command: openstack role add --domain {{ service_account.domain }} --user {{ murano.username }} admin
+          command: openstack role add --project {{ service_account.project }} --user {{ murano.username }} admin
           dependencies:
             - murano-user-create
         - name: murano-service-create
