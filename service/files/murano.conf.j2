@@ -12,7 +12,7 @@ home_region = RegionOne
 transport_url = rabbit://{{ rabbitmq.user }}:{{ rabbitmq.password }}@{{ address("rabbitmq", rabbitmq.port) }}/
 
 [database]
-connection = mysql+pymysql://{{ murano.db.username }}:{{ murano.db.password }}@{{ address(service.database) }}/{{ murano.db.name }}{% if percona.tls.enabled %}?ssl_ca=/opt/ccp/etc/tls/ca.pem{% endif %}
+connection = mysql+pymysql://{{ murano.db.username }}:{{ murano.db.password }}@{{ address(service.database) }}/{{ murano.db.name }}{% if db.tls.enabled %}?ssl_ca=/opt/ccp/etc/tls/ca.pem{% endif %}
 
 [engine]
 use_trusts = True
