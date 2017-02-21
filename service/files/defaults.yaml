@@ -11,7 +11,7 @@ configs:
     username: murano
     password: murano
 
-    logging_debug: false
+    debug: false
 
     networking:
       dns: 8.8.8.8
