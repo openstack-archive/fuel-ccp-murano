@@ -9,10 +9,8 @@ bind_port = {{ murano.api_port.cont }}
 
 home_region = RegionOne
 
-transport_url = rabbit://{{ rabbitmq.user }}:{{ rabbitmq.password }}@{{ address("rabbitmq", rabbitmq.port) }}/
-
 [database]
-connection = mysql+pymysql://{{ murano.db.username }}:{{ murano.db.password }}@{{ address(service.database) }}/{{ murano.db.name }}{% if db.tls.enabled %}?ssl_ca=/opt/ccp/etc/tls/ca.pem{% endif %}
+connection = mysql+pymysql://{{ murano.db.username }}:{{ murano.db.password }}@{{ address("database") }}/{{ murano.db.name }}{% if db.tls.enabled %}?ssl_ca=/opt/ccp/etc/tls/ca.pem{% endif %}
 
 [engine]
 use_trusts = True
@@ -28,11 +26,13 @@ password = {{ rabbitmq.password }}
 virtual_host = /
 
 [oslo_messaging_notifications]
-driver = messagingv2
-transport_url = rabbit://{{ rabbitmq.user }}:{{ rabbitmq.password }}@{{ address("rabbitmq", rabbitmq.port) }}/
+driver = noop
 
 [murano]
 url = {{ address('murano-api', murano.api_port, with_scheme=True) }}
 
 [networking]
 default_dns = {{ murano.networking.dns }}
+
+{{ oslo_messaging[messaging.backend.rpc]('rpc_config') }}
+{{ oslo_messaging[messaging.backend.notifications]('notifications_config') }}
