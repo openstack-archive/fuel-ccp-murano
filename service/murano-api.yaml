@@ -72,7 +72,7 @@ service:
                    --os-username {{ murano.username }}
                    --os-password {{ murano.password }}
                    --os-auth-url {{ address('keystone', keystone.public_port, with_scheme=True) }}
-                   --os-project-name service
+                   --os-project-name {{ service_account.project }}
                    package-import --is-public /tmp/murano-core.zip
 
 files:
