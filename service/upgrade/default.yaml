@@ -1,0 +1,43 @@
+upgrade:
+  name: upgrade-murano
+  image: murano-upgrade
+  steps:
+    - name: backup
+      command: /opt/ccp/bin/backup.sh
+      files:
+        - backup-sh
+      volumes:
+        - name: backup-dir
+          path: /var/ccp/backup/murano
+          type: host
+          readOnly: false
+      topology_key: backup
+    - name: db-sync
+      command: murano-db-manage --config-file /etc/murano/murano.conf upgrade
+      files:
+        - murano.conf
+    - name: roll-api
+      type: rolling-upgrade
+      services:
+        - murano-api
+    - name: roll-engine
+      type: rolling-upgrade
+      services:
+        - murano-engine
+    - name: import-core
+      command: cd /murano/meta/io.murano; zip -r /tmp/murano-core.zip *;
+               murano --murano-url {{ address('murano-api', murano.api_port, with_scheme=True) }}
+               --os-username {{ murano.username }}
+               --os-password {{ murano.password }}
+               --os-auth-url {{ address('keystone', keystone.public_port, with_scheme=True) }}
+               --os-project-name {{ service_account.project }}
+               package-import --is-public --exists-action=u /tmp/murano-core.zip
+
+files:
+  murano.conf:
+    path: /etc/murano/murano.conf
+    content: murano.conf.j2
+  backup-sh:
+    path: /opt/ccp/bin/backup.sh
+    content: backup.sh.j2
+    perm: "500"
