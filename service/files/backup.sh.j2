@@ -1,0 +1,6 @@
+#!/bin/bash -ex
+set -o pipefail
+BACKUP_FILE="/var/ccp/backup/murano/backup-$(date "+%Y%m%d%H%M%S").sql"
+mysqldump -h {{ address(service.database) }} \
+    -u {{ murano.db.username }} -p{{ murano.db.password }} \
+    --single-transaction {{ murano.db.name }} > "${BACKUP_FILE}"
