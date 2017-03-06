@@ -3,6 +3,14 @@ configs:
     api_port:
       cont: 8082
       ingress: application-catalog
+
+    debug: false
+
+    networking:
+      dns: 8.8.8.8
+
+secret_configs:
+  murano:
     db:
       username: murano
       password: password
@@ -10,11 +18,6 @@ configs:
 
     username: murano
     password: murano
-
-    debug: false
-
-    networking:
-      dns: 8.8.8.8
 
 sources:
   openstack/murano:
