@@ -1,0 +1,12 @@
+Verified+1: Mirantis CCP CI <mirantis-fuel-ccp-ci@mirantis.com>
+Code-Review+1: Kirill Zaitsev <k.zaitsev@me.com>
+Code-Review+1: Felipe Monteiro <felipe.monteiro@att.com>
+Code-Review+2: Sergey Reshetnyak <sreshetniak@mirantis.com>
+Code-Review+2: Yuriy Taraday <yorik.sar@gmail.com>
+Workflow+1: Yuriy Taraday <yorik.sar@gmail.com>
+Verified+2: Jenkins
+Submitted-by: Jenkins
+Submitted-at: Fri, 10 Mar 2017 09:58:36 +0000
+Reviewed-on: https://review.openstack.org/441797
+Project: openstack/fuel-ccp-murano
+Branch: refs/heads/master
