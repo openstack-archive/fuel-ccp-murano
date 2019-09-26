@@ -1,9 +1,0 @@
-actions:
-  - name: murano-db-sync
-    image: murano-base
-    dependencies:
-      - murano-db-create
-    command: murano-db-manage --config-file /etc/murano/murano.conf upgrade
-    files:
-      - path: /etc/murano/murano.conf
-        content: murano.conf.j2

@@ -1,9 +1,0 @@
-FROM {{ image_spec("murano-base") }}
-MAINTAINER {{ maintainer }}
-
-RUN apt-get install -y --no-install-recommends \
-        mysql-client \
-        zip \
-    && apt-get clean
-
-USER murano
